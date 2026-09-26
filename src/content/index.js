@@ -118,7 +118,7 @@ if (!window.__gxExport) {
     try {
       return await capture(format, options);
     } catch (e) {
-      console.error('[Grafana Snapshot]', e);
+      console.error('[Dashboard Snapshot]', e);
       return { ok: false, error: String((e && e.message) || e) };
     } finally {
       busy = false;

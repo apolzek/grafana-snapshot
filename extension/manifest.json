@@ -1,12 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "Grafana Snapshot",
+  "name": "Dashboard Snapshot for Grafana",
+  "short_name": "Dashboard Snapshot",
   "version": "0.0.0",
-  "description": "Export a Grafana dashboard exactly as you see it (HTML, SVG, PNG) and every panel's data (Excel, JSON).",
+  "description": "Export Grafana dashboards exactly as displayed (HTML, SVG, PNG) and every panel's data (Excel, JSON), all locally.",
+  "homepage_url": "https://github.com/apolzek/grafana-snapshot",
   "minimum_chrome_version": "110",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
   "action": {
-    "default_title": "Export Grafana snapshot",
+    "default_title": "Dashboard Snapshot for Grafana",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",

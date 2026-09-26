@@ -1,7 +1,7 @@
 {
   "name": "grafana-snapshot",
   "version": "1.0.0",
-  "description": "Chrome extension that exports Grafana dashboards exactly as displayed (HTML, SVG, PNG) and their panel data (XLSX, JSON).",
+  "description": "Dashboard Snapshot for Grafana: a Chrome extension that exports dashboards exactly as displayed (HTML, SVG, PNG) and their panel data (XLSX, JSON).",
   "private": true,
   "type": "module",
   "license": "MIT",
@@ -20,7 +20,10 @@
     "test": "node --test \"test/unit/**/*.test.js\"",
     "test:e2e": "playwright test",
     "grafana:up": "node scripts/grafana.mjs up",
-    "grafana:down": "node scripts/grafana.mjs down"
+    "grafana:down": "node scripts/grafana.mjs down",
+    "icons": "node scripts/icons.mjs",
+    "store-assets": "node scripts/store-assets.mjs",
+    "publish:cws": "node scripts/publish-cws.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",

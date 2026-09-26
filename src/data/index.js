@@ -49,7 +49,7 @@ window.__gxData = async (format) => {
   try {
     return await exportData(format);
   } catch (e) {
-    console.error('[Grafana Snapshot]', e);
+    console.error('[Dashboard Snapshot]', e);
     return { ok: false, error: String((e && e.message) || e) };
   }
 };

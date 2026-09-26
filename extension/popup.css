@@ -31,6 +31,7 @@ body {
 }
 header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 h1 { font-size: 15px; margin: 0; }
+h1 span { font-weight: 400; color: var(--muted); }
 .warn { background: var(--warn-bg); padding: 6px 8px; border-radius: 6px; margin: 0 0 10px; font-size: 12px; }
 h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 10px 0 5px; }
 .buttons { display: grid; gap: 6px; }

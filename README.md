@@ -1,9 +1,11 @@
-# Grafana Snapshot
+# Dashboard Snapshot for Grafana
 
 [![CI](https://github.com/apolzek/grafana-snapshot/actions/workflows/ci.yml/badge.svg)](https://github.com/apolzek/grafana-snapshot/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A Chrome extension that exports a Grafana dashboard **exactly as you see it**, and the data behind **every panel at once**.
+
+> Independent open-source project, not affiliated with or endorsed by Grafana Labs. Grafana is a trademark of Grafana Labs.
 
 | Export | What you get |
 | --- | --- |
@@ -29,7 +31,7 @@ This extension works from what your browser has already loaded:
 
 - **Complete:** lazy panels below the fold are loaded first, and the whole dashboard is captured, not only the visible part.
 - **Faithful:** it keeps your theme, time range, variables and the charts as currently drawn.
-- **Private:** nothing leaves your machine. The extension has no servers or analytics. It only re-reads the fonts and images the page already uses, and it never sends your cookies to hosts other than Grafana's.
+- **Private:** nothing leaves your machine. The extension has no servers or analytics. It only re-reads the fonts and images the page already uses, and it never sends your cookies to hosts other than Grafana's. See the [privacy policy](PRIVACY.md).
 - **Data as displayed:** panel data is read after transformations, with series named as in the legend and units attached. No queries are re-run.
 
 Tested against Grafana **10.4, 11.6, 12.0 and 13.2**. That covers both classic and Scenes dashboards, and both inner-container and page scrolling.
@@ -51,7 +53,7 @@ npm run build   # outputs dist/
 
 Then load `dist/` as an unpacked extension (same steps as above).
 
-The extension works in Chrome, Edge, Brave and any other Chromium browser, version 110 or later.
+The extension works in Chrome, Edge, Brave and any other Chromium browser, version 110 or later, on Linux, macOS, Windows and ChromeOS.
 
 ## Limitations
 
@@ -80,20 +82,18 @@ GRAFANA_URL=http://localhost:3000 npm run test:e2e
 npm run grafana:down
 ```
 
-`node scripts/grafana.mjs up <version> <port>` starts any other Grafana version. CI runs the suite against Grafana 10.4, 11.6, 12.0 and 13.2.
+`node scripts/grafana.mjs up <version> <port>` starts any other Grafana version. CI runs the unit and mock-dashboard tests on Linux, macOS and Windows, and the Grafana suite against Grafana 10.4, 11.6, 12.0 and 13.2.
 
 Some tests use extra tools when they are installed: Python checks the ZIP output and LibreOffice opens the generated XLSX. Set `CHROMIUM_PATH` to use a system Chromium instead of Playwright's.
 
 ### Releasing
 
-Bump `version` in `package.json`, commit, then tag and push:
-
 ```sh
-git tag v1.1.0
-git push --tags
+npm version minor        # bumps package.json and tags v1.1.0
+git push --follow-tags
 ```
 
-The release workflow tests the code, packages the zip and publishes a GitHub release.
+The release workflow tests the code, packages the zip, publishes a GitHub release and submits the new version to the Chrome Web Store. [docs/publishing.md](docs/publishing.md) covers the one-time store setup and how to regenerate the store images.
 
 ## License
 

@@ -10,6 +10,10 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      CWS_PUBLISHER_ID: ${{ secrets.CWS_PUBLISHER_ID }}
+      CWS_EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
+      CWS_SERVICE_ACCOUNT_KEY: ${{ secrets.CWS_SERVICE_ACCOUNT_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,3 +29,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release create "$GITHUB_REF_NAME" grafana-snapshot-*.zip --title "$GITHUB_REF_NAME" --generate-notes
+      # Runs once the Chrome Web Store secrets are configured (docs/publishing.md).
+      - name: Submit to the Chrome Web Store
+        if: env.CWS_EXTENSION_ID != ''
+        run: npm run publish:cws
