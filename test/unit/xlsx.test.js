@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { describe, it } from 'node:test';
 import {
   MAX_ROWS,
@@ -199,7 +200,7 @@ describe('buildWorkbook', () => {
     fs.writeFileSync(file, Buffer.from(await blob.arrayBuffer()));
     execFileSync(soffice, [
       '--headless',
-      `-env:UserInstallation=file://${dir}/profile`,
+      `-env:UserInstallation=${pathToFileURL(path.join(dir, 'profile')).href}`,
       '--convert-to',
       'csv:Text - txt - csv (StarCalc):44,34,76,1,,0,false,true,false,false,false,-1',
       '--outdir',

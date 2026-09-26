@@ -7,6 +7,7 @@
 import { createHash, generateKeyPairSync } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import * as esbuild from 'esbuild';
 
 const root = path.resolve(import.meta.dirname, '..');
@@ -74,6 +75,6 @@ async function build() {
   console.log(`Built ${path.relative(root, outdir)}/${watch ? ' (watching)' : ''}`);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   await build();
 }

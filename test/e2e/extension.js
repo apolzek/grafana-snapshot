@@ -2,6 +2,7 @@
 // `exportVia` helper that drives the real popup UI, exactly like a user would.
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { test as base, chromium, expect } from '@playwright/test';
 
 const dist = path.resolve(import.meta.dirname, '../../dist-test');
@@ -59,7 +60,7 @@ export { expect };
 /** Opens an exported file in a fresh tab. */
 export async function openExport(context, file) {
   const page = await context.newPage();
-  await page.goto(`file://${file}`);
+  await page.goto(pathToFileURL(file).href);
   return page;
 }
 
