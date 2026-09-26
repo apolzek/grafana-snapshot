@@ -54,7 +54,7 @@ describe('zip', () => {
       '-c',
       'import sys,zipfile; z=zipfile.ZipFile(sys.argv[1]); assert z.testzip() is None; print(",".join(z.namelist()))',
       file,
-    ]).toString().trim();
+    ], { env: { ...process.env, PYTHONUTF8: '1' } }).toString().trim(); // Windows defaults stdout to cp1252
     assert.equal(out, Object.keys(files).join(','));
   });
 });
