@@ -46,7 +46,9 @@ The *Release* workflow then does the rest:
 2. publishes a GitHub release with the zip;
 3. uploads the zip to the Chrome Web Store and submits it for review.
 
-Until the three secrets exist, the Chrome Web Store step is skipped.
+Until all three secrets exist, the Chrome Web Store step is skipped.
+
+This extension's ID is `nmeeaihakedfkcfjjdiagdhkfnjlakmf`.
 
 To upload by hand without submitting for review:
 

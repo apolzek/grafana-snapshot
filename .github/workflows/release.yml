@@ -29,7 +29,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release create "$GITHUB_REF_NAME" grafana-snapshot-*.zip --title "$GITHUB_REF_NAME" --generate-notes
-      # Runs once the Chrome Web Store secrets are configured (docs/publishing.md).
+      # Runs once all three Chrome Web Store secrets are configured (docs/publishing.md).
       - name: Submit to the Chrome Web Store
-        if: env.CWS_EXTENSION_ID != ''
+        if: env.CWS_PUBLISHER_ID != '' && env.CWS_EXTENSION_ID != '' && env.CWS_SERVICE_ACCOUNT_KEY != ''
         run: npm run publish:cws
