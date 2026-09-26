@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-dark">
+<head>
+  <meta charset="utf-8">
+  <title>Mock Service - Dashboards - Grafana</title>
+  <link rel="stylesheet" href="mock.css">
+</head>
+<!--
+  A page mimicking the parts of Grafana the extension relies on:
+  - the dashboard scrolls inside a container (Grafana <= 11), not the document;
+  - panels are lazy: their canvas is only drawn once scrolled into view;
+  - styles are injected through the CSSOM (like emotion), leaving <style> empty;
+  - each panel exposes a fake React fiber with panel-plugin props for the data export.
+-->
+<body>
+  <div class="app">
+    <nav class="sidemenu"><img class="logo" src="logo.svg" alt="logo" width="32" height="32"></nav>
+    <main class="main-view">
+      <div class="scroll-view">
+        <div class="toolbar">
+          <label>env <select id="env"><option>dev</option><option>prod</option></select></label>
+          <input id="search" type="text">
+          <input id="secret" type="password">
+          <button class="refresh" onclick="alert('should be stripped')">Refresh</button>
+        </div>
+        <div class="react-grid-layout" style="position:relative;height:2460px"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const sheet = document.head.appendChild(document.createElement('style')).sheet;
+    [
+      ':root { --bg: #111217; --panel: #181b1f; --text: #ccccdc; }',
+      'body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; }',
+      'html, body { height: 100%; }',
+      '.app { display: flex; height: 100%; }',
+      '.sidemenu { width: 56px; background: #22252b; }',
+      '.main-view { flex: 1; position: relative; overflow: hidden; }',
+      '.scroll-view { position: absolute; inset: 0; overflow: auto; }',
+      '.toolbar { padding: 8px; }',
+      '.react-grid-item { position: absolute; background: var(--panel); border: 1px solid #2f3037; border-radius: 4px; }',
+      '.react-grid-item h2 { margin: 6px 8px; font-size: 14px; }',
+      '.viz canvas { display: block; width: 100%; height: 170px; }',
+      '.refresh:hover { color: orange; }',
+      '.unused-rule-for-tests { color: red; }',
+      '@media (max-width: 10px) { .react-grid-item { display: none; } }',
+    ].forEach((rule) => sheet.insertRule(rule, sheet.cssRules.length));
+
+    const grid = document.querySelector('.react-grid-layout');
+    const T0 = Date.UTC(2026, 0, 15, 12, 0, 0);
+    const width = (grid.clientWidth - 30) / 2;
+
+    for (let i = 0; i < 8; i++) {
+      const values = Array.from({ length: 30 }, (_, k) => Math.round((50 + 40 * Math.sin(k / 4 + i)) * 100) / 100);
+      const times = values.map((_, k) => T0 + k * 60_000);
+      const item = document.createElement('div');
+      item.className = 'react-grid-item';
+      item.dataset.vizPanelKey = `panel-${i + 1}`;
+      item.style.cssText = `width:${width}px;height:230px;transform:translate(${(i % 2) * (width + 10)}px,${Math.floor(i / 2) * 610}px)`;
+      item.innerHTML = `<h2>Panel ${i + 1}</h2><div class="viz"></div>`;
+      grid.appendChild(item);
+
+      const viz = item.querySelector('.viz');
+      // What a real panel plugin component receives as props.
+      const props = {
+        id: i + 1,
+        title: `Panel ${i + 1}`,
+        timeZone: 'utc',
+        timeRange: { from: T0, to: T0 + 29 * 60_000 },
+        fieldConfig: { defaults: {}, overrides: [] },
+        options: {},
+        data: {
+          state: 'Done',
+          series: [{
+            refId: 'A',
+            name: `series-${i + 1}`,
+            fields: [
+              { name: 'time', type: 'time', config: {}, values: times },
+              { name: 'Value', type: 'number', config: { unit: 'percent' }, state: { displayName: `series-${i + 1}` }, values },
+            ],
+          }],
+        },
+      };
+      viz['__reactFiber$mock'] = { memoizedProps: { className: 'viz' }, return: { memoizedProps: props, return: { stateNode: item, return: null } } };
+
+      new IntersectionObserver((entries, observer) => {
+        if (!entries[0].isIntersecting) return;
+        observer.disconnect();
+        const canvas = document.createElement('canvas');
+        canvas.width = 600;
+        canvas.height = 170;
+        const ctx = canvas.getContext('2d');
+        ctx.strokeStyle = `hsl(${i * 45}, 80%, 60%)`;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        values.forEach((v, k) => ctx.lineTo((k * 600) / 29, 170 - v * 1.7));
+        ctx.stroke();
+        viz.appendChild(canvas);
+        item.dataset.rendered = 'true';
+      }).observe(item);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+/* A regular stylesheet (not CSSOM) to make sure both kinds are collected. */
+.toolbar select { background: #2a2d33; color: inherit; }

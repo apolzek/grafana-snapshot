@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    name: Build and unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+
+  e2e:
+    name: E2E (Grafana ${{ matrix.grafana }})
+    needs: unit
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        grafana: ['10.4.0', '11.6.0', '12.0.0', '13.2.2']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Start Grafana ${{ matrix.grafana }}
+        run: node scripts/grafana.mjs up ${{ matrix.grafana }} 3000
+      - name: Run end-to-end tests
+        run: npm run test:e2e
+        env:
+          GRAFANA_URL: http://localhost:3000
+      - name: Upload report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-grafana-${{ matrix.grafana }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7

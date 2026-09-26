@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Grafana Snapshot</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="icons/icon32.png" alt="" width="20" height="20">
+    <h1>Grafana Snapshot</h1>
+  </header>
+
+  <p id="warn" class="warn" hidden>This page does not look like a Grafana dashboard. Snapshots still work, as a generic page capture.</p>
+
+  <h2>Snapshot</h2>
+  <div class="buttons three">
+    <button data-snapshot="html" title="Single self-contained file; opens offline in any browser, text stays selectable">HTML</button>
+    <button data-snapshot="svg" title="Vector image (foreignObject); opens in any browser">SVG</button>
+    <button data-snapshot="png" title="Full-page image at your screen's resolution">PNG</button>
+  </div>
+
+  <h2>Panel data</h2>
+  <div class="buttons two">
+    <button data-data="xlsx" title="One sheet per panel; time series joined by timestamp; native Excel dates and numbers">Excel (.xlsx)</button>
+    <button data-data="json" title="Every panel, series, label and unit in a single file">JSON</button>
+  </div>
+
+  <fieldset>
+    <label><input type="checkbox" id="loadAll" checked> Load every panel first (scrolls the dashboard)</label>
+    <label><input type="checkbox" id="expand" checked> Whole dashboard, not just the visible part</label>
+    <label><input type="checkbox" id="embedFonts" checked> Embed fonts (works offline)</label>
+    <label><input type="checkbox" id="pruneCss" checked> Drop unused CSS (smaller file)</label>
+  </fieldset>
+
+  <button id="kiosk" class="link">Toggle kiosk mode (hides Grafana's menus)</button>
+
+  <div id="status" class="status" role="status" aria-live="polite"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
